@@ -41,7 +41,7 @@ class SearchLineEdit(QLineEdit):
 
     def __initWidget(self):
         """ 初始化小部件 """
-        self.resize(300, 45)
+        self.resize(370, 45)
         self.clearButton.hide()
         self.setAttribute(Qt.WA_StyledBackground)
         # 设置提示文字
