@@ -1,5 +1,4 @@
 # coding:utf-8
-
 from app.components.basic_selection_mode_bar import (BasicButton,
                                                      BasicSelectionModeBar,
                                                      CheckAllButton)
@@ -44,19 +43,10 @@ class SelectionModeBar(BasicSelectionModeBar):
 
     def __initWidget(self):
         """ 初始化界面 """
-        self.addButtons(
-            [
-                self.cancelButton,
-                self.playButton,
-                self.nextToPlayButton,
-                self.addToButton,
-                self.showAlbumButton,
-                self.editInfoButton,
-                self.propertyButton,
-                self.deleteButton,
-                self.checkAllButton,
-            ]
-        )
+        self.addButtons([
+            self.cancelButton, self.playButton, self.nextToPlayButton,
+            self.addToButton, self.showAlbumButton, self.editInfoButton,
+            self.propertyButton, self.deleteButton, self.checkAllButton
+        ])
         self.setToHideButtons(self.button_list[4:-2])
         self.insertSeparator(1)
-
