@@ -1,4 +1,5 @@
 # coding:utf-8
+from app.components.dialog_box.delete_card_dialog import DeleteCardDialog
 from app.components.menu import AcrylicMenu, AddToMenu
 from app.components.song_list_widget.basic_song_list_widget import \
     BasicSongListWidget
@@ -12,7 +13,7 @@ class SongListWidget(BasicSongListWidget):
     """ 专辑界面歌曲卡列表视图 """
 
     playSignal = pyqtSignal(int)
-    playOneSongSig = pyqtSignal(dict)
+    playOneSongSig = pyqtSignal(dict)        # 只播放选中的歌曲
     nextToPlayOneSongSig = pyqtSignal(dict)  # 插入一首歌到播放列表中
 
     def __init__(self, songInfo_list: list, parent=None):
@@ -21,29 +22,35 @@ class SongListWidget(BasicSongListWidget):
             SongCardType.ALBUM_INTERFACE_SONG_CARD,
             parent,
             QMargins(30, 0, 30, 0),
-            116*2
+            0
         )
         # 创建歌曲卡
-        self.__createSongCards()
+        self.createSongCards(self.__connectSongCardSignalToSlot)
         # 初始化
-        self.__initWidget()
-
-    def __initWidget(self):
-        """ 初始化小部件 """
+        self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.setAttribute(Qt.WA_StyledBackground)
         self.setAlternatingRowColors(True)
-        # 设置层叠样式
         self.__setQss()
 
-    def __createSongCards(self):
-        """ 清空列表并创建新歌曲卡 """
-        super().createSongCards(self.__connectSongCardSignalToSlot)
+    def appendOneSongCard(self, songInfo: dict, connectSongCardSigToSlotFunc):
+        super().appendOneSongCard(songInfo, connectSongCardSigToSlotFunc)
+        self.__adjustHeight()
 
-    def __playButtonSlot(self, index):
-        """ 歌曲卡播放按钮槽函数 """
-        self.playSignal.emit(index)
-        self.setCurrentIndex(index)
-        self.setPlay(index)
+    def __showDeleteCardDialog(self):
+        index = self.currentRow()
+        title = "是否确定要删除此项？"
+        content = f"""如果删除"{self.songInfo_list[index]['songName']}"，它将不再位于此设备上。"""
+        w = DeleteCardDialog(title, content, self.window())
+        w.deleteCardSig.connect(lambda: self.removeSongCard(index))
+        w.exec_()
+
+    def removeSongCard(self, index):
+        super().removeSongCard(index)
+        self.__adjustHeight()
+
+    def clearSongCards(self):
+        super().clearSongCards()
+        self.__adjustHeight()
 
     def contextMenuEvent(self, e: QContextMenuEvent):
         """ 重写鼠标右击时间的响应函数 """
@@ -54,7 +61,23 @@ class SongListWidget(BasicSongListWidget):
             self.__connectMenuSignalToSlot(contextMenu)
             contextMenu.exec(self.cursor().pos())
 
-    def __emitCurrentChangedSignal(self, index):
+    def updateAllSongCards(self, songInfo_list: list):
+        """ 更新所有歌曲卡，根据给定的信息决定创建或者删除歌曲卡 """
+        super().updateAllSongCards(songInfo_list, self.__connectSongCardSignalToSlot)
+        self.__adjustHeight()
+
+    def sortSongCardByTrackNum(self):
+        """ 以曲序为基准排序歌曲卡 """
+        self.sortSongInfo(key="tracknumber")
+        self.updateAllSongCards(self.songInfo_list)
+
+    def __playButtonSlot(self, index):
+        """ 歌曲卡播放按钮槽函数 """
+        self.playSignal.emit(index)
+        self.setCurrentIndex(index)
+        self.setPlay(index)
+
+    def __onSongCardDoubleClicked(self, index):
         """ 发送当前播放的歌曲卡变化信号，同时更新样式和歌曲信息卡 """
         if self.isInSelectionMode:
             return
@@ -67,18 +90,8 @@ class SongListWidget(BasicSongListWidget):
         with open("app/resource/css/album_interface_song_list_widget.qss", encoding="utf-8") as f:
             self.setStyleSheet(f.read())
 
-    def updateAllSongCards(self, songInfo_list: list):
-        """ 更新所有歌曲卡，根据给定的信息决定创建或者删除歌曲卡 """
-        super().updateAllSongCards(songInfo_list, self.__connectSongCardSignalToSlot)
-        self.__adjustHeight()
-
-    def sortSongCardByTrackNum(self):
-        """ 以曲序为基准排序歌曲卡 """
-        self.sortSongInfo(key="tracknumber")
-        self.updateAllSongCards(self.songInfo_list)
-
     def __connectMenuSignalToSlot(self, contextMenu):
-        """ 信号连接到槽 """
+        """ 右击菜单信号连接到槽 """
         contextMenu.playAct.triggered.connect(
             lambda: self.playOneSongSig.emit(
                 self.songCard_list[self.currentRow()].songInfo))
@@ -86,9 +99,9 @@ class SongListWidget(BasicSongListWidget):
             lambda: self.nextToPlayOneSongSig.emit(
                 self.songCard_list[self.currentRow()].songInfo))
         contextMenu.editInfoAct.triggered.connect(self.showSongInfoEditDialog)
-        contextMenu.showPropertyAct.triggered.connect(self.showPropertyPanel)
-        contextMenu.deleteAct.triggered.connect(
-            lambda: self.__removeSongCard(self.currentRow()))
+        contextMenu.showPropertyAct.triggered.connect(
+            self.showSongPropertyDialog)
+        contextMenu.deleteAct.triggered.connect(self.__showDeleteCardDialog)
         contextMenu.addToMenu.playingAct.triggered.connect(
             lambda: self.addSongToPlayingSignal.emit(
                 self.songCard_list[self.currentRow()].songInfo))
@@ -103,29 +116,17 @@ class SongListWidget(BasicSongListWidget):
 
     def __connectSongCardSignalToSlot(self, songCard):
         """ 将歌曲卡信号连接到槽 """
-        songCard.doubleClicked.connect(self.__emitCurrentChangedSignal)
+        songCard.doubleClicked.connect(self.__onSongCardDoubleClicked)
         songCard.playButtonClicked.connect(self.__playButtonSlot)
         songCard.clicked.connect(self.setCurrentIndex)
         songCard.checkedStateChanged.connect(
-            self.songCardCheckedStateChangedSlot)
-
-    def appendOneSongCard(self, songInfo: dict, connectSongCardSigToSlotFunc):
-        super().appendOneSongCard(songInfo, connectSongCardSigToSlotFunc)
-        self.__adjustHeight()
-
-    def removeSongCard(self, index):
-        super().removeSongCard(index)
-        self.__adjustHeight()
+            self.onSongCardCheckedStateChanged)
 
     def __adjustHeight(self):
         """ 调整高度 """
         margin = self.viewportMargins()
         self.resize(self.width(), 60*len(self.songCard_list) +
-                    margin.bottom()+margin.top()+self.paddingBottomHeight)
-
-    def clearSongCards(self):
-        super().clearSongCards()
-        self.__adjustHeight()
+                    margin.bottom()+margin.top()+116)
 
     def wheelEvent(self, e):
         return
@@ -137,11 +138,6 @@ class SongCardListContextMenu(AcrylicMenu):
     def __init__(self, parent):
         super().__init__("", parent)
         self.setFixedWidth(128)
-        # 创建动作
-        self.createActions()
-
-    def createActions(self):
-        """ 创建动作 """
         # 创建主菜单动作
         self.playAct = QAction("播放", self)
         self.nextSongAct = QAction("下一首播放", self)

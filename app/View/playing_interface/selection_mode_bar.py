@@ -27,7 +27,7 @@ class SelectionModeBar(SelectionModeBarBase):
         self.moveUpButton = BasicButton(
             r"app\resource\images\selection_mode_bar\Up.png", "向上移动", self)
         self.moveDownButton = BasicButton(
-            r"app\resource\images\selection_mode_bar\Delete.png", "向下移动", self)
+            r"app\resource\images\selection_mode_bar\Down.png", "向下移动", self)
         self.showAlbumButton = BasicButton(
             r"app\resource\images\selection_mode_bar\显示专辑_20_20.png", "显示专辑", self)
         self.propertyButton = BasicButton(

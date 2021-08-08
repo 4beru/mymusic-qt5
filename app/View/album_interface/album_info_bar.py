@@ -44,7 +44,7 @@ class AlbumInfoBar(CollapsingAppBarBase):
         self.albumName = albumInfo.get("album", "未知专辑")  # type:str
         self.songerName = albumInfo.get("songer", "未知歌手")  # type:str
         self.albumCoverPath = albumInfo.get(
-            "cover_path", r"app\resource\images\未知专辑封面_200_200.png")  # type:str
+            "coverPath", "app/resource/images/default_covers/默认专辑封面_200_200.png")  # type:str
 
     def onMoreActionsButtonClicked(self):
         """ 显示更多操作菜单 """
@@ -62,7 +62,8 @@ class AlbumInfoBar(CollapsingAppBarBase):
         menu = AddToMenu(parent=self)
         pos = self.mapToGlobal(self.addToButton.pos())
         x = pos.x() + self.addToButton.width() + 5
-        y = pos.y() + self.addToButton.height() // 2 - (13 + 38 * menu.actionCount()) // 2
+        y = pos.y() + self.addToButton.height() // 2 - \
+            (13 + 38 * menu.actionCount()) // 2
         menu.playingAct.triggered.connect(self.addToPlayingPlaylistSig)
         menu.addSongsToPlaylistSig.connect(self.addToCustomPlaylistSig)
         menu.newPlaylistAct.triggered.connect(self.addToNewCustomPlaylistSig)
