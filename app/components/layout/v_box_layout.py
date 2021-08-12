@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import QVBoxLayout
 
 
 class VBoxLayout(QVBoxLayout):
-    """ 垂直布置 """
+    """ 垂直布局 """
 
     def __init__(self, parent):
         super().__init__(parent)

@@ -1,8 +1,7 @@
 # coding:utf-8
 from app.components.dialog_box.message_dialog import MessageDialog
 from app.components.menu import AddToMenu, DWMMenu
-from app.components.song_list_widget.basic_song_list_widget import BasicSongListWidget
-from app.components.song_list_widget.song_card_type import SongCardType
+from app.components.song_list_widget import BasicSongListWidget, SongCardType
 from PyQt5.QtCore import QMargins, Qt, pyqtSignal
 from PyQt5.QtGui import QContextMenuEvent
 from PyQt5.QtWidgets import QAction
@@ -17,6 +16,15 @@ class SongListWidget(BasicSongListWidget):
     switchToAlbumInterfaceSig = pyqtSignal(str, str)
 
     def __init__(self, songInfo_list: list, parent=None):
+        """
+        Parameters
+        ----------
+        songInfo_list:list
+            歌曲信息列表
+
+        parent:
+            父级窗口
+        """
         super().__init__(
             songInfo_list,
             SongCardType.SONG_TAB_SONG_CARD,
