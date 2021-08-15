@@ -4,7 +4,7 @@ from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QWidget
 
 
-class BasicNavigationWidget(QWidget):
+class NavigationWidgetBase(QWidget):
     """ 导航部件基类 """
 
     switchInterfaceSig = pyqtSignal(int)
@@ -17,7 +17,7 @@ class BasicNavigationWidget(QWidget):
         self._selectableButtonNames = []
         self.playlistNameButtons = []
         self.__switchInterfaceButtonIndex_dict = {
-            'musicGroupButton': 0,
+            'myMusicButton': 0,
             'playlistButton': 1,
             'settingButton': 2
         }
@@ -65,11 +65,6 @@ class BasicNavigationWidget(QWidget):
         # 发送当前按钮的名字，要求导航界面同步按钮选中状态
         self.selectedButtonChanged.emit(selectedButtonName)
 
-        # 如果按下的按钮在切换界面的按钮列表中，就发送切换界面的信号
-        if selectedButtonName in self.__switchInterfaceButtonIndex_dict.keys():
-            self.switchInterfaceSig.emit(
-                self.__switchInterfaceButtonIndex_dict[selectedButtonName])
-
     def __updateButtonSelectedState(self, selectedButtonName: str):
         """ 更新选中的按钮样式 """
         self.currentButton.setSelected(False)
@@ -80,5 +75,5 @@ class BasicNavigationWidget(QWidget):
 
     def __setQss(self):
         """ 设置层叠样式 """
-        with open(r'app\resource\css\navigation.qss', encoding='utf-8') as f:
+        with open('app/resource/css/navigation.qss', encoding='utf-8') as f:
             self.setStyleSheet(f.read())
