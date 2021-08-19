@@ -1,6 +1,6 @@
 # coding:utf-8
-from app.common.get_cover_path import getCoverPath
-
+from app.common.os_utils import getCoverPath, adjustName
+from .get_album_cover import AlbumCoverGetter
 
 class AlbumInfoGetter:
     """ 从歌曲信息列表中整理出专辑信息的类 """
@@ -70,3 +70,23 @@ class AlbumInfoGetter:
     def sortBySonger(self):
         """ 以歌手名排序专辑信息列表 """
         self.albumInfo_list.sort(key=lambda albumInfo: albumInfo["singer"])
+
+    @staticmethod
+    def getAlbumInfoByOneSong(songInfo: dict):
+        """ 从一首歌创建一个专辑信息 """
+        album = songInfo["album"]
+        singer = songInfo["singer"]
+        coverName = adjustName(singer+'_'+album)
+        
+        coverPath = getCoverPath(coverName, 'album_big')
+        albumInfo = {
+            "album": album,
+            "singer": singer,
+            "genre": songInfo["genre"],
+            "year": songInfo["year"],
+            "songInfo_list": [songInfo.copy()],
+            "modifiedTime": songInfo["createTime"],
+            "coverPath": coverPath,
+            "coverName": coverName,
+        }
+        return albumInfo

@@ -1,9 +1,9 @@
 # coding:utf-8
 
 from PyQt5.QtCore import QThread, pyqtSignal
-from PyQt5.QtGui import QPixmap, QImage
+from PyQt5.QtGui import QPixmap
 
-from app.common.gaussian_blur import getBlurPixmap
+from app.common.image_process_utils import getBlurPixmap
 
 
 class BlurCoverThread(QThread):

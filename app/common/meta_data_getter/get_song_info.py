@@ -106,6 +106,7 @@ class SongInfoGetter:
         """ 获取一首歌的信息 """
         tag = TinyTag.get(songPath)
         fileInfo = QFileInfo(songPath)
+        
         # 获取标签信息
         suffix = "." + fileInfo.suffix()
         songName = tag.title if tag.title and tag.title.strip() else fileInfo.baseName()
