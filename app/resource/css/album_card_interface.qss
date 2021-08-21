@@ -86,19 +86,19 @@ QLabel#albumNameLabel[isChecked='True'] {
     font-weight: bold;
 }
 
-QLabel#singerNameLabel {
+QLabel#contentLabel {
     font-size: 16px;
 }
 
-QLabel#singerNameLabel[isChecked='True'] {
+QLabel#contentLabel[isChecked='True'] {
     color: rgb(153, 196, 205);
 }
 
-QLabel#singerNameLabel[isChecked='False']:hover {
+QLabel#contentLabel[isChecked='False']:hover {
     color: rgb(150, 150, 150);
 }
 
-QLabel#singerNameLabel[isChecked='True']:hover {
+QLabel#contentLabel[isChecked='True']:hover {
     color: rgb(122, 178, 190);
 }
 
