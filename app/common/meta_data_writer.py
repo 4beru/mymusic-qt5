@@ -36,7 +36,7 @@ class MetaDataWriter:
         """
         raise NotImplementedError("该方法必须被子类实现")
 
-    def writeAlbumCover(self, picData, mimeType: str):
+    def writeAlbumCover(self, picData: bytes, mimeType: str):
         """ 写入专辑封面
 
         Parameters
@@ -86,7 +86,7 @@ class MP3Writer(MetaDataWriter):
         return True
 
     @saveExceptionHandler
-    def writeAlbumCover(self, picData, mimeType: str):
+    def writeAlbumCover(self, picData: bytes, mimeType: str):
         keyName = 'APIC:'
         keyNames = []
 
@@ -125,7 +125,7 @@ class FLACWriter(MetaDataWriter):
         return True
 
     @saveExceptionHandler
-    def writeAlbumCover(self, picData, mimeType: str):
+    def writeAlbumCover(self, picData: bytes, mimeType: str):
         picture = Picture()
         picture.mime = mimeType
         picture.data = picData
@@ -166,7 +166,7 @@ class MP4Writer(MetaDataWriter):
         return True
 
     @saveExceptionHandler
-    def writeAlbumCover(self, picData, mimeType: str):
+    def writeAlbumCover(self, picData: bytes, mimeType: str):
         self.audio['covr'] = [picData]
         self.audio.save()
         return True
@@ -199,7 +199,7 @@ def writeSongInfo(songInfo: dict) -> bool:
     return writer.writeSongInfo(songInfo)
 
 
-def writeAlbumCover(songPath: str, coverPath: str, picData=None) -> bool:
+def writeAlbumCover(songPath: str, coverPath: str, picData: bytes = None) -> bool:
     """ 给音频文件写入封面
 
     Parameters
@@ -210,7 +210,7 @@ def writeAlbumCover(songPath: str, coverPath: str, picData=None) -> bool:
     coverPath : str
         封面图片路径
 
-    picData : str
+    picData : bytes
         封面图片二进制数据
 
     Returns
