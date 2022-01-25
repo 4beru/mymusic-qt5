@@ -1,13 +1,15 @@
 # coding:utf-8
-from shutil import rmtree
 from pathlib import Path
+from shutil import rmtree
+from typing import List
 
-from mutagen import File, FileType
-from mutagen.mp4 import MP4
-from mutagen.mp3 import MP3
-from mutagen.flac import FLAC
-
+from common.database.entity import SongInfo
 from common.image_process_utils import getPicSuffix
+from common.os_utils import adjustName
+from mutagen import File, FileType
+from mutagen.flac import FLAC
+from mutagen.mp3 import MP3
+from mutagen.mp4 import MP4
 
 
 class AlbumCoverReaderBase:
@@ -77,7 +79,7 @@ class AlbumCoverReader:
         self.songInfos = songInfos
         self.getAlbumCovers(songInfos)
 
-    def updateAlbumCovers(self, songInfos: list):
+    def updateAlbumCovers(self, songInfos: List[SongInfo]):
         """ 重新扫描指定的文件下的音频文件的专辑封面 """
         self.songInfos = songInfos
         self.getAlbumCovers(songInfos)
@@ -90,15 +92,15 @@ class AlbumCoverReader:
             cls.getOneAlbumCover(songInfo)
 
     @classmethod
-    def getOneAlbumCover(cls, songInfo: dict):
+    def getOneAlbumCover(cls, songInfo: SongInfo):
         """ 获取一张专辑封面 """
         cls.coverFolder.mkdir(exist_ok=True, parents=True)
 
-        isExists = cls.__isCoverExists(songInfo['coverName'])
+        isExists = cls.__isCoverExists(songInfo.singer, songInfo.album)
         if isExists:
             return
 
-        audio = File(songInfo["songPath"], options=[MP3, FLAC, MP4])
+        audio = File(songInfo.file, options=[MP3, FLAC, MP4])
         AudioType = type(audio)
         readerMap = {
             MP3: MP3AlbumCoverReader,
@@ -111,22 +113,26 @@ class AlbumCoverReader:
 
         picData = readerMap[AudioType].getAlbumCover(audio)
         if picData:
-            cls.__save(songInfo['coverName'], picData)
+            cls.__save(songInfo.singer, songInfo.album, picData)
 
     @classmethod
-    def __isCoverExists(cls, coverName: str) -> bool:
+    def __isCoverExists(cls, singer: str, album: str) -> bool:
         """ 检测封面是否存在
 
         Parameters
         ----------
-        coverName: str
-            封面名字
+        singer: str
+            歌手
+
+        album: str
+            专辑
 
         Returns
         -------
         isExists: bool
             封面是否存在
         """
+        coverName = adjustName(singer + '_' + album)
         folder = cls.coverFolder / coverName
 
         isExists = False
@@ -143,17 +149,21 @@ class AlbumCoverReader:
         return isExists
 
     @classmethod
-    def __save(cls, coverName: str, picData: bytes):
+    def __save(cls, singer: str, album: str, picData: bytes):
         """ 储存提取到的专辑封面
 
         Parameters
         ----------
-        coverName: str
-            封面名字
+        singer: str
+            歌手
+
+        album: str
+            专辑
 
         picData: bytes
             封面二进制数据
         """
+        coverName = adjustName(singer + '_' + album)
         folder = cls.coverFolder / coverName
         folder.mkdir(exist_ok=True, parents=True)
 
