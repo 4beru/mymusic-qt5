@@ -5,9 +5,7 @@ from common.database.entity import SongInfo
 from common.signal_bus import signalBus
 from components.selection_mode_interface import (SelectionModeBarType,
                                                  SongSelectionModeInterface)
-from PyQt5.QtCore import Qt, pyqtSignal
-
-from .song_list_widget import SongListWidget
+from components.song_list_widget import SongListWidget
 
 
 class SongTabInterface(SongSelectionModeInterface):
