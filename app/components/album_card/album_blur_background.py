@@ -1,5 +1,4 @@
 # coding:utf-8
-
 from PIL import Image
 from PIL.ImageFilter import GaussianBlur
 from PIL.ImageQt import ImageQt
