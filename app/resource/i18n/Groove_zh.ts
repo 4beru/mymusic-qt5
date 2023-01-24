@@ -1983,6 +1983,21 @@
         <translation>应用主题</translation>
     </message>
     <message>
+        <location filename="../../View/setting_interface/setting_interface.py" line="66"/>
+        <source>Choose a color theme to personalize Groove Music</source>
+        <translation>选择颜色主题以赋予 Groove 音乐更多个性</translation>
+    </message>
+    <message>
+        <location filename="../../View/setting_interface/setting_interface.py" line="88"/>
+        <source>Language</source>
+        <translation>语言</translation>
+    </message>
+    <message>
+        <location filename="../../View/setting_interface/setting_interface.py" line="89"/>
+        <source>Set your preferred language for UI</source>
+        <translation>选择界面所使用的语言</translation>
+    </message>
+    <message>
         <location filename="../../View/setting_interface/setting_interface.py" line="76"/>
         <source>Change the size of widgets and fonts</source>
         <translation>更改小部件和界面字体的大小</translation>
