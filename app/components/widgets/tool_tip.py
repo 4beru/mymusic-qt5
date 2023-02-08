@@ -1,12 +1,14 @@
 # coding:utf-8
+from common.icon import drawSvgIcon
 from common.style_sheet import setStyleSheet
-from components.widgets.label import PixmapLabel
+from components.buttons.three_state_button import ThreeStateButton
 from PyQt5.QtCore import (QEasingCurve, QPoint, QPropertyAnimation, QSize, Qt,
-                          QTimer, pyqtSignal)
-from PyQt5.QtGui import QColor, QPainter, QPixmap
+                          QTimer, pyqtSignal, QRect)
+from PyQt5.QtGui import QColor, QPainter
 from PyQt5.QtWidgets import (QApplication, QFrame, QGraphicsDropShadowEffect,
                              QGraphicsOpacityEffect, QHBoxLayout, QLabel,
                              QToolButton, QWidget)
+from PyQt5.QtSvg import QSvgWidget
 
 
 class ToolTip(QFrame):
@@ -107,8 +109,7 @@ class ToolTip(QFrame):
         self.move(x, y)
 
 
-
-class StateTooltip(QWidget):
+class StateToolTip(QWidget):
     """ State tooltip """
 
     closedSignal = pyqtSignal()
@@ -137,9 +138,17 @@ class StateTooltip(QWidget):
         self.opacityEffect = QGraphicsOpacityEffect(self)
         self.slideAni = QPropertyAnimation(self, b'pos')
         self.opacityAni = QPropertyAnimation(self.opacityEffect, b"opacity")
-        self.busyImage = QPixmap(":/images/state_tooltip/running.png")
-        self.doneImage = QPixmap(":/images/state_tooltip/completed.png")
-        self.closeButton = QToolButton(self)
+        self.busyIconPath = ":/images/state_tool_tip/running.svg"
+        self.doneIconPath = ":/images/state_tool_tip/completed.svg"
+        self.closeButton = ThreeStateButton(
+            {
+                'normal': ':/images/state_tool_tip/close_normal.svg',
+                'hover': ':/images/state_tool_tip/close_hover.svg',
+                'pressed': ':/images/state_tool_tip/close_pressed.svg',
+            },
+            parent=self,
+            buttonSize=(14, 14)
+        )
 
         self.isDone = False
         self.rotateAngle = 0
@@ -178,7 +187,7 @@ class StateTooltip(QWidget):
         """ set style sheet """
         self.titleLabel.setObjectName("titleLabel")
         self.contentLabel.setObjectName("contentLabel")
-        setStyleSheet(self, 'state_tooltip')
+        setStyleSheet(self, 'state_tool_tip')
         self.titleLabel.adjustSize()
         self.contentLabel.adjustSize()
 
@@ -229,7 +238,7 @@ class StateTooltip(QWidget):
             dy = i*(self.height() + 20)
             pos = QPoint(self.window().width() - self.width() - 30, 63+dy)
             widget = self.window().childAt(pos + QPoint(2, 2))
-            if isinstance(widget, (StateTooltip, ToastTooltip)):
+            if isinstance(widget, (StateToolTip, ToastToolTip)):
                 pos += QPoint(0, self.height() + 20)
             else:
                 break
@@ -249,22 +258,18 @@ class StateTooltip(QWidget):
         """ paint state tooltip """
         super().paintEvent(e)
         painter = QPainter(self)
-        painter.setRenderHints(QPainter.SmoothPixmapTransform)
+        painter.setRenderHints(QPainter.Antialiasing |
+                               QPainter.SmoothPixmapTransform)
         painter.setPen(Qt.NoPen)
         if not self.isDone:
             painter.translate(24, 23)
             painter.rotate(self.rotateAngle)
-            painter.drawPixmap(
-                -int(self.busyImage.width() / 2),
-                -int(self.busyImage.height() / 2),
-                self.busyImage,
-            )
+            drawSvgIcon(self.busyIconPath, painter, QRect(-10, -10, 20, 20))
         else:
-            painter.drawPixmap(14, 13, self.doneImage.width(),
-                               self.doneImage.height(), self.doneImage)
+            drawSvgIcon(self.doneIconPath, painter, QRect(14, 13, 20, 20))
 
 
-class DownloadStateTooltip(StateTooltip):
+class DownloadStateToolTip(StateToolTip):
     """ Download state tooltip """
 
     def __init__(self, title, content, downloadTaskNum=1, parent=None):
@@ -291,8 +296,8 @@ class DownloadStateTooltip(StateTooltip):
         self.setContent(content)
 
 
-class ToastTooltip(QWidget):
-    """ Toast tooltip """
+class ToastToolTip(QFrame):
+    """ Toast tool tip """
 
     def __init__(self, title: str, content: str, icon: str, parent=None):
         """
@@ -313,13 +318,20 @@ class ToastTooltip(QWidget):
         super().__init__(parent)
         self.title = title
         self.content = content
-        self.icon = f":/images/state_tooltip/{icon}.png"
+        self.icon = f":/images/state_tool_tip/{icon}.png"
 
         self.titleLabel = QLabel(self.title, self)
         self.contentLabel = QLabel(self.content, self)
-        self.iconLabel = PixmapLabel(self)
-        self.closeButton = QToolButton(self)
-        self.closeTimer = QTimer(self)
+        self.iconLabel = QSvgWidget(f":/images/state_tool_tip/{icon}.svg", self)
+        self.closeButton = ThreeStateButton(
+            {
+                'normal': ':/images/state_tool_tip/close_normal.svg',
+                'hover': ':/images/state_tool_tip/close_hover.svg',
+                'pressed': ':/images/state_tool_tip/close_pressed.svg',
+            },
+            parent=self,
+            buttonSize=(14, 14)
+        )
         self.opacityEffect = QGraphicsOpacityEffect(self)
         self.opacityAni = QPropertyAnimation(self.opacityEffect, b"opacity")
         self.slideAni = QPropertyAnimation(self, b'pos')
@@ -331,11 +343,9 @@ class ToastTooltip(QWidget):
         self.setAttribute(Qt.WA_StyledBackground)
         self.closeButton.setFixedSize(QSize(14, 14))
         self.closeButton.setIconSize(QSize(14, 14))
-        self.closeTimer.setInterval(2000)
         self.contentLabel.setMinimumWidth(250)
 
-        self.iconLabel.setPixmap(QPixmap(self.icon))
-        self.iconLabel.adjustSize()
+        self.iconLabel.setFixedSize(20, 20)
         self.iconLabel.move(15, 13)
 
         self.setGraphicsEffect(self.opacityEffect)
@@ -343,7 +353,6 @@ class ToastTooltip(QWidget):
 
         # connect signal to slot
         self.closeButton.clicked.connect(self.hide)
-        self.closeTimer.timeout.connect(self.__fadeOut)
 
         self.__setQss()
         self.__initLayout()
@@ -360,7 +369,7 @@ class ToastTooltip(QWidget):
         """ set style sheet """
         self.titleLabel.setObjectName("titleLabel")
         self.contentLabel.setObjectName("contentLabel")
-        setStyleSheet(self, 'state_tooltip')
+        setStyleSheet(self, 'state_tool_tip')
         self.titleLabel.adjustSize()
         self.contentLabel.adjustSize()
 
@@ -378,7 +387,7 @@ class ToastTooltip(QWidget):
             dy = i*(self.height() + 20)
             pos = QPoint(self.window().width() - self.width() - 30, 63+dy)
             widget = self.window().childAt(pos + QPoint(2, 2))
-            if isinstance(widget, (StateTooltip, ToastTooltip)):
+            if isinstance(widget, (StateToolTip, ToastToolTip)):
                 pos += QPoint(0, self.height() + 20)
             else:
                 break
@@ -393,4 +402,4 @@ class ToastTooltip(QWidget):
         self.slideAni.setEndValue(pos)
         self.slideAni.start()
         super().showEvent(e)
-        self.closeTimer.start()
+        QTimer.singleShot(2000, self.__fadeOut)
