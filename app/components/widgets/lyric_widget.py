@@ -147,7 +147,7 @@ class LyricWidget(ScrollArea):
             vh = label.visibleRegion().boundingRect().height()
             h = label.height()
 
-            alpha = 255 if label.isPlay else 255*0.6
+            alpha = 255 if label.isPlay else int(255*0.6)
             color = QColor(255, 255, 255, alpha)
 
             palette = QPalette()
@@ -238,7 +238,7 @@ class LyricLabel(QLabel):
         # change font color
         palette = QPalette()
         self.setForegroundRole(QPalette.Text)
-        alpha = 255 if isPlay else 255*0.6
+        alpha = 255 if isPlay else int(255*0.6)
         palette.setBrush(QPalette.Text, QColor(255, 255, 255, alpha))
         self.setPalette(palette)
 

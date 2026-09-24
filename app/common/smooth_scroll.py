@@ -87,10 +87,10 @@ class SmoothScroll:
 
         # construct wheel event
         if self.orient == Qt.Vertical:
-            p = QPoint(0, totalDelta)
+            p = QPoint(0, round(totalDelta))
             bar = self.widget.verticalScrollBar()
         else:
-            p = QPoint(totalDelta, 0)
+            p = QPoint(round(totalDelta), 0)
             bar = self.widget.horizontalScrollBar()
 
         e = QWheelEvent(

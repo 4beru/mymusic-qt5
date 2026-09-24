@@ -186,11 +186,11 @@ class CollapsingAppBarBase(QWidget):
         h_ = (self.coverLabel.width()-w1)//2
 
         # paint first white line
-        painter.setBrush(QColor(255, 255, 255, 255*0.4))
+        painter.setBrush(QColor(255, 255, 255, int(255*0.4)))
         painter.drawRect(x+h_, y-h_, w1, h_)
 
         # paint second white line
-        painter.setBrush(QColor(255, 255, 255, 255*0.2))
+        painter.setBrush(QColor(255, 255, 255, int(255*0.2)))
         painter.drawRect(x+2*h_, y-2*h_, w2, h_)
 
     def __hideButtons(self):

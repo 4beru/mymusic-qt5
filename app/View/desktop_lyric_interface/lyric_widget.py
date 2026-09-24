@@ -208,7 +208,7 @@ class LyricWidget(QWidget):
     @property
     def translationFont(self):
         font = QFont(config.get(config.deskLyricFontFamily))
-        font.setPixelSize(config.get(config.deskLyricFontSize)//1.5)
+        font.setPixelSize(int(config.get(config.deskLyricFontSize)//1.5))
         return font
 
     originMaskWidth = pyqtProperty(
