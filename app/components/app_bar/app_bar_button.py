@@ -41,7 +41,7 @@ class AppBarButton(QPushButton):
         painter.setRenderHints(QPainter.Antialiasing | QPainter.SmoothPixmapTransform)
 
         # draw icon
-        rect = QRect(24, (self.height()-20)/2, 20, 20)
+        rect = QRect(24, int((self.height()-20)/2), 20, 20)
         drawSvgIcon(self.iconPath, painter, rect)
 
     def cancelHoverState(self):
