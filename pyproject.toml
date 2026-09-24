@@ -1,0 +1,51 @@
+[project]
+name = "groove-music"
+version = "1.0.0"
+description = "A cross-platform music player based on PyQt5"
+readme = "README.md"
+requires-python = ">=3.10,<3.13"
+dependencies = [
+  # GUI
+  "PyQt5>=5.15.9",
+  "PyQt5-sip>=12.13.0",
+
+  # Image / audio processing
+  "numpy>=1.24.0,<2",
+  "scipy>=1.10.0,<1.14",
+  "opencv-python>=4.8.0",
+  "Pillow>=9.5.0",
+  "colorthief>=0.2.1",
+
+  # Metadata / tags
+  "mutagen>=1.45.1",
+  "tinytag>=1.7.0",
+
+  # Search / matching / network
+  "fuzzywuzzy>=0.18.0",
+  "python-Levenshtein>=0.12.0",
+  "requests>=2.26.0",
+
+  # Pinyin sorting
+  "pinyin>=0.4.0",
+
+  # Crypto (netease weapi)
+  "pycryptodome>=3.9.8",
+
+  # Dark mode detection
+  "darkdetect>=0.8.0",
+
+  # Platform specific
+  "xcffib>=0.11.1 ; sys_platform == 'linux'",
+  "pywin32>=227 ; sys_platform == 'win32'",
+  "pyqtkeybind>=0.0.9 ; sys_platform == 'win32'",
+  "pyobjc-framework-Cocoa ; sys_platform == 'darwin'",
+]
+
+[project.optional-dependencies]
+docs = [
+  "sphinx-markdown-tables>=0.0.17",
+  "sphinx-rtd-theme>=1.1.1",
+]
+
+[tool.uv]
+package = false

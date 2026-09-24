@@ -30,3 +30,11 @@ dist
 build
 *.spec
 docs/build
+
+# uv / python
+.venv/
+
+# devenv / direnv / nix
+.direnv/
+.devenv/
+devenv.local.nix

@@ -214,8 +214,8 @@ class MainWindow(AcrylicWindow):
         r = self.devicePixelRatioF()
         desktop = QApplication.desktop().availableGeometry()
         w, h = desktop.width(), desktop.height()
-        self.resize(w*1240/1920, h*970/1080)
-        self.setMinimumSize(w*r*1030/1920, h*r*780/1080)
+        self.resize(int(w*1240/1920), int(h*970/1080))
+        self.setMinimumSize(int(w*r*1030/1920), int(h*r*780/1080))
 
         self.setWindowTitle(self.tr("Groove Music"))
         self.setWindowIcon(QIcon(":/images/logo/logo.ico"))

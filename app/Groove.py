@@ -1,5 +1,6 @@
 # coding:utf-8
 import os
+import signal
 import sys
 from inspect import getsourcefile
 from pathlib import Path
@@ -30,6 +31,12 @@ QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps)
 app = SingletonApplication(sys.argv, APP_NAME)
 app.setAttribute(Qt.AA_DontCreateNativeWidgetSiblings)
 app.setApplicationName(APP_NAME)
+
+# Allow Ctrl+C to terminate the GUI. Python's default SIGINT handler raises
+# KeyboardInterrupt, which PyQt's event loop catches and swallows (via the
+# custom sys.excepthook), making the process impossible to stop with Ctrl+C.
+# SIG_DFL restores the OS default so Ctrl+C kills the process directly.
+signal.signal(signal.SIGINT, signal.SIG_DFL)
 
 # Internationalization
 translator = QTranslator()

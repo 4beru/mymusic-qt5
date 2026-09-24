@@ -10,7 +10,7 @@ from colorthief import ColorThief
 from PIL import Image
 from PyQt5.QtCore import QIODevice, QBuffer
 from PyQt5.QtGui import QImage, QPixmap
-from scipy.ndimage.filters import gaussian_filter
+from scipy.ndimage import gaussian_filter
 
 from .exception_handler import exceptionHandler
 from .logger import Logger
@@ -364,7 +364,7 @@ class PixmapPerspectiveTransform:
         s = image.bits().asstring(height * width * channels_count)
 
         # BGRA image array
-        array = np.fromstring(s, np.uint8).reshape(
+        array = np.frombuffer(s, np.uint8).reshape(
             (height, width, channels_count))
 
         return array
