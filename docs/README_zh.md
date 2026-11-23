@@ -41,12 +41,32 @@
 
 > 在线搜索、音频流、下载和视频功能依赖第三方服务及其当前政策。支持的音频格式还取决于系统中可用的多媒体解码器。
 
+
+## 基于 Qt 构建
+
+<p align="center">
+  <img src="source/_static/images/qt-logo.png" width="102" alt="Qt 框架标志" />
+</p>
+
+MyMusic 使用 **PyQt5** 构建桌面界面，通过 **Qt Multimedia** 实现媒体播放，使用 Python 管理曲库及歌曲元数据，并通过 **SQLite** 保存本地记录。仓库中的 **Nix/devenv** 配置还提供可复现的 Linux 开发环境。
+
 ## 应用截图
 
 | 播放器 | 歌手曲库 |
 | :---: | :---: |
 | ![MyMusic 中文播放界面](source/_static/images/mymusic-ch-player.png) | ![MyMusic 中文歌手曲库](source/_static/images/mymusic-ch-artist.png) |
 | 音乐播放、封面与歌词 | 按歌手浏览音乐 |
+
+
+### 移动端尺寸的界面预览
+
+仓库还提供以下竖版／移动端尺寸的界面图片。这些图片用于展示桌面项目的视觉设计，并不表示已经发布 Android 或 iOS 应用。
+
+<p align="center">
+  <img src="source/_static/images/Player-ch.png" width="44%" alt="MyMusic 中文竖版播放器预览" />
+  &nbsp;&nbsp;
+  <img src="source/_static/images/Artist-ch.png" width="44%" alt="MyMusic 中文竖版歌手曲库预览" />
+</p>
 
 ## 系统架构
 
@@ -99,6 +119,35 @@ sequenceDiagram
   UI->>Player: 加载并播放歌曲
   Player-->>UI: 返回播放状态和进度
 ```
+
+
+### 原始架构及类图
+
+以下保留原始项目中的四张设计图，包括界面结构、选择模式及专辑卡视图。**图片中的中文名称和类图关系均保留原样**，便于对照原始设计。请注意，这些是上游设计参考，部分细节可能与当前代码实现有所不同。
+
+**1. 界面结构**
+
+<p align="center">
+  <img src="source/_static/images/界面结构.png" width="86%" alt="原始界面结构图" />
+</p>
+
+**2. 选择模式界面类图**
+
+<p align="center">
+  <img src="source/_static/images/选择模式界面类图.png" width="86%" alt="原始选择模式界面类图" />
+</p>
+
+**3. 选择模式栏类图**
+
+<p align="center">
+  <img src="source/_static/images/选择模式栏类图.png" width="86%" alt="原始选择模式栏类图" />
+</p>
+
+**4. 专辑卡视图类图**
+
+<p align="center">
+  <img src="source/_static/images/专辑卡视图类图.png" width="86%" alt="原始专辑卡视图类图" />
+</p>
 
 ## 快速开始
 

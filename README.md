@@ -41,12 +41,32 @@ This repository is **Abel Ortega's maintained adaptation of [Groove Music](https
 
 > Online search, streaming, downloads, and video playback depend on third-party services and their policies. Actual media-format compatibility depends on your system's multimedia codecs.
 
+
+## Built with Qt
+
+<p align="center">
+  <img src="docs/source/_static/images/qt-logo.png" width="102" alt="Qt framework logo" />
+</p>
+
+MyMusic's interface is built with **PyQt5**, while **Qt Multimedia** handles media playback. The project also uses Python for library indexing and metadata management, with **SQLite** for persistent local records. The included **Nix/devenv** configuration provides a reproducible Linux development environment.
+
 ## Screenshots
 
 | Player | Artist library |
 | :---: | :---: |
 | ![Player screen in English](docs/source/_static/images/mymusic-eng-player.png) | ![Artist collection in English](docs/source/_static/images/mymusic-eng-artist.png) |
 | Playback, artwork and lyrics | Explore your library by artist |
+
+
+### Mobile-format previews
+
+The repository also includes these portrait/mobile-format interface images. They are visual previews of the desktop project, not a claim that an Android or iOS application is available.
+
+<p align="center">
+  <img src="docs/source/_static/images/mymusic_player.png" width="44%" alt="MyMusic English mobile-format player preview" />
+  &nbsp;&nbsp;
+  <img src="docs/source/_static/images/mymusic_artist.png" width="44%" alt="MyMusic English mobile-format artist preview" />
+</p>
 
 ## Architecture
 
@@ -99,6 +119,35 @@ sequenceDiagram
   UI->>Player: Load and play track
   Player-->>UI: Playback status and progress
 ```
+
+
+### Original architecture diagrams
+
+The original project includes detailed diagrams of the interface hierarchy and its selection and album-card components. **They retain their original Chinese annotations** so the class names and relationships can be read in their original context. These are upstream design references; some details may differ from the current implementation.
+
+**1. Interface structure — 界面结构**
+
+<p align="center">
+  <img src="docs/source/_static/images/界面结构.png" width="86%" alt="Original interface structure diagram with Chinese labels" />
+</p>
+
+**2. Selection-mode interface — 选择模式界面类图**
+
+<p align="center">
+  <img src="docs/source/_static/images/选择模式界面类图.png" width="86%" alt="Original selection-mode interface class diagram" />
+</p>
+
+**3. Selection toolbar — 选择模式栏类图**
+
+<p align="center">
+  <img src="docs/source/_static/images/选择模式栏类图.png" width="86%" alt="Original selection toolbar class diagram" />
+</p>
+
+**4. Album-card view — 专辑卡视图类图**
+
+<p align="center">
+  <img src="docs/source/_static/images/专辑卡视图类图.png" width="86%" alt="Original album-card view class diagram" />
+</p>
 
 ## Getting started
 
