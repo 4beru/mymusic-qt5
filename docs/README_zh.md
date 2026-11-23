@@ -1,85 +1,162 @@
 <p align="center">
-  <img width="15%" align="center" src="../app/resource/images/logo/logo.png" alt="logo">
-</p>
-  <h1 align="center">
-  Groove 音乐
-</h1>
-<p align="center">
-  一个基于 PyQt5 的跨平台音乐播放器
+  <img src="source/_static/images/mymusic-logo.png" width="120" alt="MyMusic 标志" />
 </p>
 
+<h1 align="center">MyMusic</h1>
+
 <p align="center">
-
-  <a style="text-decoration:none">
-    <img src="https://img.shields.io/badge/Python-3.8.6-blue.svg?color=00B16A" alt="Python 3.8.6"/>
-  </a>
-
-  <a style="text-decoration:none">
-    <img src="https://img.shields.io/badge/PyQt-5.15.2-blue?color=00B16A" alt="PyQt 5.15.2"/>
-  </a>
-
-  <a style="text-decoration:none">
-    <img src="https://img.shields.io/badge/Platform-Win32%20|%20Linux%20|%20macOS-blue?color=00B16A" alt="Platform Win32 | Linux | macOS"/>
-  </a>
+  <strong>你的音乐，你的曲库，你的桌面。</strong><br />
+  基于 Python、PyQt5 和 Qt Multimedia 构建的跨平台音乐播放器。
 </p>
 
 <p align="center">
-<a href="../README.md">English</a> | 简体中文
+  <img src="https://img.shields.io/badge/Python-3.10%E2%80%933.12-3776AB?logo=python&logoColor=white" alt="Python 3.10–3.12" />
+  <img src="https://img.shields.io/badge/PyQt-5-41CD52?logo=qt&logoColor=white" alt="PyQt5" />
+  <img src="https://img.shields.io/badge/Platform-Windows%20%7C%20Linux%20%7C%20macOS-555" alt="Windows、Linux 和 macOS" />
+  <a href="../LICENSE"><img src="https://img.shields.io/badge/License-GPL--3.0-1A7F64" alt="GPL-3.0" /></a>
 </p>
 
-## 界面
-![界面](source/_static/images/Groove音乐.jpg)
+<p align="center">
+  <a href="../README.md">English</a> · <strong>简体中文</strong>
+</p>
 
-## 功能
+<p align="center"><sub>MyMusic 版本作者与维护者：<a href="https://github.com/4beru"><strong>Abel Ortega</strong></a></sub></p>
 
-* 播放本地音乐
+![MyMusic 中文桌面界面](source/_static/images/mymusic_eyecatch-ch.png)
 
-  ![local music](source/_static/images/本地音乐.gif)
+## 项目简介
 
-* 创建和管理个人播放列表
+**MyMusic** 将本地音乐管理、曲库浏览和播放功能整合到专为桌面设计的界面中。项目基于 **Python 和 Qt 5**，支持歌曲信息管理、歌词、播放列表及可选的在线音乐功能。
 
-  ![custom playlist](source/_static/images/播放列表.gif)
+本仓库是 **Abel Ortega 基于 [Groove Music](https://github.com/zhiyiYo/Groove) 维护和开发的版本**。为了与上游代码保持兼容，部分模块及 `app/Groove.py` 启动入口仍使用原有名称。原作者信息与许可证见[文末](#作者与许可证)。
 
-* 查看和编辑歌曲元数据
+## 核心功能
 
-  ![song meta data](source/_static/images/歌曲信息.gif)
+- **浏览本地曲库** — 按歌曲、歌手和专辑管理音乐，读取音频标签和封面。
+- **组织播放内容** — 创建播放列表、管理播放队列并查看最近播放记录。
+- **灵活的播放控制** — 随机与循环播放、迷你播放器、音量控制及完整播放界面。
+- **歌词与歌曲标签** — 歌词显示、桌面歌词和歌曲元数据编辑。
+- **探索在线音乐** — 在第三方服务可用时搜索音乐及访问音乐视频。
+- **原生桌面体验** — 深色/浅色主题、系统托盘和不同平台的窗口适配。
 
-* 观看和下载在线 MV
+> 在线搜索、音频流、下载和视频功能依赖第三方服务及其当前政策。支持的音频格式还取决于系统中可用的多媒体解码器。
 
-  ![MV](source/_static/images/播放和下载MV.jpg)
+## 应用截图
 
+| 播放器 | 歌手曲库 |
+| :---: | :---: |
+| ![MyMusic 中文播放界面](source/_static/images/mymusic-ch-player.png) | ![MyMusic 中文歌手曲库](source/_static/images/mymusic-ch-artist.png) |
+| 音乐播放、封面与歌词 | 按歌手浏览音乐 |
+
+## 系统架构
+
+桌面界面通过 Qt 信号与槽机制及全局 **SignalBus** 与应用服务通信。歌曲信息和播放列表使用基于 SQLite 的本地数据层，Qt Multimedia 负责音频播放。
+
+```mermaid
+flowchart TB
+  subgraph UI["桌面界面 · PyQt5"]
+    Main["主窗口与导航"] --> Views["曲库 · 搜索 · 播放列表 · 播放器"]
+  end
+  subgraph Core["应用服务层"]
+    Events["SignalBus"]
+    Library["曲库与元数据"]
+    Media["Qt Multimedia 播放器"]
+    Search["在线服务适配器"]
+  end
+  subgraph Data["数据与外部服务"]
+    Files[("本地音乐文件")]
+    DB[("SQLite")]
+    Providers["第三方音乐服务"]
+  end
+  Views <--> Events
+  Views --> Library
+  Views --> Media
+  Views --> Search
+  Library <--> DB
+  Library --> Files
+  Media --> Files
+  Search --> Providers
+```
+
+### 从本地曲库到音乐播放
+
+```mermaid
+sequenceDiagram
+  actor User as 用户
+  participant UI as 曲库界面
+  participant Scanner as 曲库扫描器
+  participant Metadata as 元数据读取器
+  participant Store as SQLite 服务
+  participant Player as Qt Multimedia
+
+  User->>UI: 添加音乐文件夹
+  UI->>Scanner: 扫描文件
+  Scanner->>Metadata: 读取歌曲标签和封面
+  Metadata-->>Scanner: 返回歌曲信息
+  Scanner->>Store: 保存或更新曲库记录
+  Store-->>UI: 提供歌曲、专辑和歌手
+  User->>UI: 选择歌曲
+  UI->>Player: 加载并播放歌曲
+  Player-->>UI: 返回播放状态和进度
+```
 
 ## 快速开始
-1. 创建虚拟环境:
 
-    ```shell
-    conda create -n Groove python=3.8
-    conda activate Groove
-    pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
-    ```
+**环境要求：** Python **3.10–3.12**、[uv](https://docs.astral.sh/uv/) 和可用的 Qt Multimedia 后端。项目依赖以 [`pyproject.toml`](../pyproject.toml) 为准。
 
-2. 下载解码器：
-   * 对于 Win32，安装 [LAV Filters](https://github.com/Nevcairiel/LAVFilters/releases/download/0.74/LAVFilters-0.74-Installer.exe)
-   * 对于 Linux，安装 GStreamer
+### Python + uv
 
+```bash
+git clone https://github.com/4beru/mymusic-qt5.git
+cd mymusic-qt5
+uv sync
+uv run python app/Groove.py
+```
 
-3. 打开 Groove 音乐:
+**Linux** 用户需要通过发行版包管理器安装 GStreamer 和相应插件。**Windows** 上部分格式可能需要 [LAV Filters](https://github.com/Nevcairiel/LAVFilters/releases)。**macOS** 需要配置兼容的 Qt 多媒体后端。
 
-    ```shell
-    cd app
-    conda activate Groove
-    python Groove.py
-    ```
+### 使用 Nix 构建可复现的 Linux 开发环境
 
-## 文档
-使用 Groove 音乐之前建议阅读[帮助文档](https://groove-music.readthedocs.io)，你想知道的，都在这里~~
+仓库包含面向 Linux 的 [`devenv.nix`](../devenv.nix)，用于配置 **Python 3.11**、uv 依赖同步、Qt/X11 库和 GStreamer 插件。
 
-## 许可证
+```bash
+git clone https://github.com/4beru/mymusic-qt5.git
+cd mymusic-qt5
+devenv shell
+run-app
+```
 
-Groove 使用 GPLv3 许可证进行授权。
+`run-app` 会启动 `app/Groove.py`。当前 Nix 配置主要面向 Linux/X11，并非为所有平台提供完全相同的环境。
 
-版权所有 © 2020 by zhiyiYo.
+## 项目结构
 
-> *注意*
->
-> Groove 音乐仅供学习使用，任何人不得将其用于商业及其他非法用途，否则后果自负。
+```text
+app/
+├── Groove.py             # 应用入口
+├── View/                 # 页面与导航
+├── components/           # Qt 自定义组件与播放器
+├── common/
+│   ├── crawler/          # 在线音乐服务适配器
+│   ├── database/         # SQLite DAO、服务与控制器
+│   ├── library/          # 本地音乐曲库
+│   ├── meta_data/        # 歌曲标签与封面
+│   └── signal_bus.py     # 全局事件通信
+└── resource/              # Qt 资源与翻译文件
+docs/                      # 用户及开发者文档
+devenv.nix                 # 可复现的 Linux 环境
+pyproject.toml             # Python 项目与依赖配置
+```
+
+应用支持 **英语、简体中文和繁体中文** 本地化选项；本仓库 README 提供 **英语和简体中文** 两种版本。
+
+## 相关文档
+
+可以阅读[用户指南](source/user-guide/quick-start.md)、[支持的音频格式](source/user-guide/supported-formats.md)、[架构说明](source/developer-guide/architecture.md)、[数据库设计](source/developer-guide/database.md)及[事件总线](source/developer-guide/signal-bus.md)。
+
+## 作者与许可证
+
+**MyMusic 版本、品牌及仓库维护：** **[Abel Ortega](https://github.com/4beru)**。
+
+**原始应用与代码基础：** [Groove Music](https://github.com/zhiyiYo/Groove)，作者 **zhiyiYo**（原始版权 © 2020 zhiyiYo）。本版本保留上游项目的署名。
+
+本项目采用 **GNU General Public License v3.0**，详见 [LICENSE](../LICENSE)。第三方歌曲、封面、歌词和视频的版权归各自权利人所有。

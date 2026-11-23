@@ -1,90 +1,162 @@
 <p align="center">
-  <img width="15%" align="center" src="app/resource/images/logo/logo.png" alt="logo">
-</p>
-  <h1 align="center">
-  Groove Music
-</h1>
-<p align="center">
-  A cross-platform music player based on PyQt5
+  <img src="docs/source/_static/images/mymusic-logo.png" width="120" alt="MyMusic logo" />
 </p>
 
+<h1 align="center">MyMusic</h1>
+
 <p align="center">
-
-  <a style="text-decoration:none">
-    <img src="https://img.shields.io/badge/Python-3.8.6-blue.svg?color=00B16A" alt="Python 3.8.6"/>
-  </a>
-
-  <a style="text-decoration:none">
-    <img src="https://img.shields.io/badge/PyQt-5.15.2-blue?color=00B16A" alt="PyQt 5.15.2"/>
-  </a>
-
-  <a style="text-decoration:none">
-    <img src="https://img.shields.io/badge/Platform-Win32%20|%20Linux%20|%20macOS-blue?color=00B16A" alt="Platform Win32 | Linux | macOS"/>
-  </a>
+  <strong>Your music. Your library. Your desktop.</strong><br />
+  A cross-platform music experience built with Python, PyQt5 and Qt Multimedia.
 </p>
 
 <p align="center">
-English | <a href="docs/README_zh.md">简体中文</a>
+  <img src="https://img.shields.io/badge/Python-3.10%E2%80%933.12-3776AB?logo=python&logoColor=white" alt="Python 3.10–3.12" />
+  <img src="https://img.shields.io/badge/PyQt-5-41CD52?logo=qt&logoColor=white" alt="PyQt5" />
+  <img src="https://img.shields.io/badge/Platform-Windows%20%7C%20Linux%20%7C%20macOS-555" alt="Windows, Linux and macOS" />
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-GPL--3.0-1A7F64" alt="GPL-3.0" /></a>
 </p>
 
-![界面](docs/source/_static/images/Groove音乐.jpg)
+<p align="center">
+  <strong>English</strong> · <a href="docs/README_zh.md">简体中文</a>
+</p>
+
+<p align="center"><sub>MyMusic edition by <a href="https://github.com/4beru"><strong>Abel Ortega</strong></a></sub></p>
+
+![MyMusic English desktop overview](docs/source/_static/images/mymusic_eyecatch.png)
+
+## About MyMusic
+
+**MyMusic** brings together local music discovery, library organization, and playback in a desktop-first interface. Built with **Python and Qt 5**, it combines a customizable UI with audio metadata management, lyrics, playlists, and optional online music integration.
+
+This repository is **Abel Ortega's maintained adaptation of [Groove Music](https://github.com/zhiyiYo/Groove)**. Some source modules and the `app/Groove.py` entry point retain their upstream names. Attribution to the original project is preserved in the [credits](#authorship-and-license).
 
 ## Features
 
-* Play local music
+- **Explore your collection** — browse local tracks, artists, and albums with associated metadata and artwork.
+- **Organize your listening** — create playlists, manage a playback queue, and access recently played songs.
+- **Enjoy flexible playback** — repeat and shuffle controls, compact player, volume control, and a dedicated playing view.
+- **Work with lyrics and tags** — lyrics display, desktop lyrics, and song metadata editing.
+- **Discover music online** — integrated searches and music-video features when external providers are available.
+- **Feel at home on desktop** — configurable light/dark themes, system tray support, and platform-specific window behavior.
 
-  ![local music](docs/source/_static/images/本地音乐.gif)
+> Online search, streaming, downloads, and video playback depend on third-party services and their policies. Actual media-format compatibility depends on your system's multimedia codecs.
 
-* Create and manage custom playlist
+## Screenshots
 
-  ![custom playlist](docs/source/_static/images/播放列表.gif)
+| Player | Artist library |
+| :---: | :---: |
+| ![Player screen in English](docs/source/_static/images/mymusic-eng-player.png) | ![Artist collection in English](docs/source/_static/images/mymusic-eng-artist.png) |
+| Playback, artwork and lyrics | Explore your library by artist |
 
-* View and edit song meta data
+## Architecture
 
-  ![song meta data](docs/source/_static/images/歌曲信息.gif)
+The desktop UI communicates with application services through Qt signals and slots, including a shared **SignalBus**. Music metadata and playlists use a local SQLite-backed data layer, while Qt Multimedia handles playback.
 
-* Watch and download MV
+```mermaid
+flowchart TB
+  subgraph UI["Desktop interface · PyQt5"]
+    Main["MainWindow and navigation"] --> Views["Library · Search · Playlists · Player"]
+  end
+  subgraph Core["Application services"]
+    Events["SignalBus"]
+    Library["Library and metadata"]
+    Media["Qt Multimedia player"]
+    Search["Online provider adapters"]
+  end
+  subgraph Data["Data and integrations"]
+    Files[("Local music files")]
+    DB[("SQLite")]
+    Providers["External music services"]
+  end
+  Views <--> Events
+  Views --> Library
+  Views --> Media
+  Views --> Search
+  Library <--> DB
+  Library --> Files
+  Media --> Files
+  Search --> Providers
+```
 
-  ![MV](docs/source/_static/images/播放和下载MV.jpg)
+### How local music reaches the player
 
+```mermaid
+sequenceDiagram
+  actor User as Listener
+  participant UI as Library UI
+  participant Scanner as Library scanner
+  participant Metadata as Metadata reader
+  participant Store as SQLite services
+  participant Player as Qt Multimedia
 
+  User->>UI: Add music folder
+  UI->>Scanner: Scan files
+  Scanner->>Metadata: Read track tags and artwork
+  Metadata-->>Scanner: Track information
+  Scanner->>Store: Save/update library entries
+  Store-->>UI: Songs, albums, artists
+  User->>UI: Select a song
+  UI->>Player: Load and play track
+  Player-->>UI: Playback status and progress
+```
 
-## Quick start
-1. Create virtual environment:
+## Getting started
 
-    ```shell
-    conda create -n Groove python=3.8
-    conda activate Groove
-    pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
-    ```
+**Requirements:** Python **3.10–3.12**, [uv](https://docs.astral.sh/uv/) and an operational Qt Multimedia backend. The maintained dependency definitions are in [`pyproject.toml`](pyproject.toml).
 
-2. Download decoder:
-   * For the Win32, you should install [LAV Filters](https://github.com/Nevcairiel/LAVFilters/releases/download/0.74/LAVFilters-0.74-Installer.exe).
-   * For the Linux, you should install GStreamer.
+### Python + uv
 
-3. Open Groove music:
+```bash
+git clone https://github.com/4beru/mymusic-qt5.git
+cd mymusic-qt5
+uv sync
+uv run python app/Groove.py
+```
 
-    ```shell
-    cd app
-    conda activate Groove
-    python Groove.py
-    ```
+On **Linux**, install GStreamer and its relevant plugins using your distribution's package manager. On **Windows**, some media formats may require [LAV Filters](https://github.com/Nevcairiel/LAVFilters/releases). On **macOS**, use a compatible Qt multimedia backend.
 
+### Reproducible Linux development with Nix
 
-## Document
-Want to know more about Groove Music? Please read the [help document](https://groove-music.readthedocs.io) 👈
+The included [`devenv.nix`](devenv.nix) provisions **Python 3.11**, uv synchronization, the Qt/X11 runtime and GStreamer plugins for Linux.
 
-## See also
+```bash
+git clone https://github.com/4beru/mymusic-qt5.git
+cd mymusic-qt5
+devenv shell
+run-app
+```
 
-- [zhiyiYo/PyQt-Frameless-Window](https://github.com/zhiyiYo/PyQt-Frameless-Window)：A cross-platform frameless window based on pyqt5, support Win32, Linux and macOS.
-- [zhiyiYo/PyQt-Fluent-Widgets](https://github.com/zhiyiYo/PyQt-Fluent-Widgets)：A fluent design widgets library based on PyQt5
-- [jsmolka/egg-player](https://github.com/jsmolka/egg-player)：A Groove Music like music player. The code of this repo is very elegant.
+The `run-app` script launches `app/Groove.py`. This Nix configuration targets Linux/X11 rather than every supported operating system.
 
-## License
-Groove is licensed under GPLv3 for non-commercial usage.
+## Codebase at a glance
 
-Copyright © 2020 by zhiyiYo.
+```text
+app/
+├── Groove.py             # Application entry point
+├── View/                 # Screens and navigation
+├── components/           # Custom widgets and media player
+├── common/
+│   ├── crawler/          # Music-service integrations
+│   ├── database/         # SQLite DAO, services and controllers
+│   ├── library/          # Local library scanning
+│   ├── meta_data/        # Tags and cover artwork
+│   └── signal_bus.py     # Application-wide signals
+└── resource/              # Qt assets and translations
+docs/                      # User and developer documentation
+devenv.nix                 # Reproducible Linux environment
+pyproject.toml             # Python project configuration
+```
 
-> *Attention*
->
-> This software is only for learning and communication, the songs' and playlists' copyright belongs to each music platform.
+The app offers **English, Simplified Chinese and Traditional Chinese** localization options. Documentation in this repository is presented in **English and Simplified Chinese**.
+
+## Documentation
+
+Explore the [user guide](docs/source/user-guide/quick-start.md), [supported media formats](docs/source/user-guide/supported-formats.md), [architecture notes](docs/source/developer-guide/architecture.md), [database design](docs/source/developer-guide/database.md) and [signal bus](docs/source/developer-guide/signal-bus.md).
+
+## Authorship and license
+
+**MyMusic edition, branding and repository maintenance:** **[Abel Ortega](https://github.com/4beru)**.
+
+**Original project and codebase:** [Groove Music](https://github.com/zhiyiYo/Groove) by **zhiyiYo** (original copyright © 2020 zhiyiYo). This adaptation preserves the upstream attribution.
+
+Distributed under the **GNU General Public License v3.0**; see [LICENSE](LICENSE). Third-party songs, artwork, lyrics and videos remain the property of their respective rights holders.
