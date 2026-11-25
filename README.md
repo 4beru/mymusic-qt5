@@ -198,7 +198,14 @@ The app offers **English, Simplified Chinese and Traditional Chinese** localizat
 
 ## Documentation
 
-Explore the [user guide](docs/source/user-guide/quick-start.md), [supported media formats](docs/source/user-guide/supported-formats.md), [architecture notes](docs/source/developer-guide/architecture.md), [database design](docs/source/developer-guide/database.md) and [signal bus](docs/source/developer-guide/signal-bus.md).
+The user and developer guides are available in English and Simplified Chinese. This README links to the English edition. For Chinese documentation, see the [中文文档](docs/README_zh.md#相关文档).
+
+| Guide | Topics |
+| --- | --- |
+| **User guide** | [Getting started](docs/source/en/user-guide/quick-start.md) · [Supported audio formats](docs/source/en/user-guide/supported-formats.md) · [Playback modes](docs/source/en/user-guide/playback-logic.md) · [Keyboard shortcuts](docs/source/en/user-guide/hotkey.md) · [Lyric file formats](docs/source/en/user-guide/lyrics-format.md) · [FAQ](docs/source/en/user-guide/faq.md) |
+| **Developer guide** | [Development setup](docs/source/en/developer-guide/quick-start.md) · [Software architecture](docs/source/en/developer-guide/architecture.md) · [Development conventions](docs/source/en/developer-guide/development-standard.md) · [Database design](docs/source/en/developer-guide/database.md) · [Signal bus](docs/source/en/developer-guide/signal-bus.md) · [Qt development notes](docs/source/en/developer-guide/development-experience.md) · [About the project](docs/source/en/developer-guide/about.rst) |
+
+The English guide retains the original architecture diagrams, with English explanations and current setup instructions. The original Chinese documentation remains available separately.
 
 ## Authorship and license
 

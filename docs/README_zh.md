@@ -196,11 +196,18 @@ devenv.nix                 # 可复现的 Linux 环境
 pyproject.toml             # Python 项目与依赖配置
 ```
 
-应用支持 **英语、简体中文和繁体中文** 本地化选项；本仓库 README 提供 **英语和简体中文** 两种版本。
+应用支持 **英语、简体中文和繁体中文** 本地化选项；本仓库 README 及用户、开发者指南提供 **英语和简体中文** 两种版本。
 
 ## 相关文档
 
-可以阅读[用户指南](source/user-guide/quick-start.md)、[支持的音频格式](source/user-guide/supported-formats.md)、[架构说明](source/developer-guide/architecture.md)、[数据库设计](source/developer-guide/database.md)及[事件总线](source/developer-guide/signal-bus.md)。
+用户指南和开发者指南均提供英语和简体中文版本。本 README 链接至原始中文文档；如需阅读英语版本，请参阅 [English documentation](../README.md#documentation)。
+
+| 指南 | 文档 |
+| --- | --- |
+| **用户指南** | [快速上手](source/user-guide/quick-start.md) · [音频格式](source/user-guide/supported-formats.md) · [播放逻辑](source/user-guide/playback-logic.md) · [快捷键](source/user-guide/hotkey.md) · [歌词文件](source/user-guide/lyrics-format.md) · [常见问题](source/user-guide/faq.md) |
+| **开发者指南** | [开发环境](source/developer-guide/quick-start.md) · [软件架构](source/developer-guide/architecture.md) · [开发规范](source/developer-guide/development-standard.md) · [数据库](source/developer-guide/database.md) · [事件总线](source/developer-guide/signal-bus.md) · [开发经验](source/developer-guide/development-experience.md) · [关于项目](source/developer-guide/about.rst) |
+
+英语版保留原始架构图，并根据当前仓库更新安装和开发环境说明；中文原始文档保持不变。
 
 ## 作者与许可证
 

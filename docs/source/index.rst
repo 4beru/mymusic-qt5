@@ -68,3 +68,9 @@
    developer-guide/signal-bus
    developer-guide/development-experience
    developer-guide/about
+
+.. toctree::
+   :maxdepth: 2
+   :caption: English documentation
+
+   en/index
