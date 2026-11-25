@@ -28,8 +28,6 @@
 
 **MyMusic** brings together local music discovery, library organization, and playback in a desktop-first interface. Built with **Python and Qt 5**, it combines a customizable UI with audio metadata management, lyrics, playlists, and optional online music integration.
 
-This repository is **Abel Ortega's maintained adaptation of [Groove Music](https://github.com/zhiyiYo/Groove)**. Some source modules and the `app/Groove.py` entry point retain their upstream names. Attribution to the original project is preserved in the [credits](#authorship-and-license).
-
 ## Features
 
 - **Explore your collection** — browse local tracks, artists, and albums with associated metadata and artwork.
@@ -205,7 +203,5 @@ Explore the [user guide](docs/source/user-guide/quick-start.md), [supported medi
 ## Authorship and license
 
 **MyMusic edition, branding and repository maintenance:** **[Abel Ortega](https://github.com/4beru)**.
-
-**Original project and codebase:** [Groove Music](https://github.com/zhiyiYo/Groove) by **zhiyiYo** (original copyright © 2020 zhiyiYo). This adaptation preserves the upstream attribution.
 
 Distributed under the **GNU General Public License v3.0**; see [LICENSE](LICENSE). Third-party songs, artwork, lyrics and videos remain the property of their respective rights holders.
